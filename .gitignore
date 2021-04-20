@@ -23,3 +23,13 @@
 /app/Config/core.php
 /app/Config/database.php
 /vendors/*
+
+#idea
+modules.xml
+mvc_from_scratch_practice.iml
+vcs.xml
+Project_Default.xml
+
+#composer
+vender/
+composer.lock
