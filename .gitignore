@@ -29,6 +29,8 @@ modules.xml
 mvc_from_scratch_practice.iml
 vcs.xml
 Project_Default.xml
+.idea/*
+.idea/php.xml
 
 #composer
 vender/
