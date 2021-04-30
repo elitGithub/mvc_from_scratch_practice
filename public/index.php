@@ -4,14 +4,11 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendo
 
 use App\Core\Application;
 
-$app = new Application();
+$app = new Application(dirname(__DIR__));
 
-$app->router->get('/', function () {
-	return 'Hello world';
-});
+$app->router->get('/', 'home');
 
-$app->router->get('/contact', function () {
-	return 'Contact';
-});
+$app->router->get('/contact', 'contact');
+
 
 $app->run();

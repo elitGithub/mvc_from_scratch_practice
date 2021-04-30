@@ -15,25 +15,26 @@ class Router
 	 * Router constructor.
 	 *
 	 * @param  Request  $request
+	 * @param  Response  $response
 	 */
-	public function __construct(public Request $request)
+	public function __construct(public Request $request, public Response $response)
 	{
 	}
 
 	/**
 	 * @param $path
-	 * @param  callable  $callback
+	 * @param $callback
 	 */
-	public function get($path, callable $callback)
+	public function get($path, $callback)
 	{
 		$this->routes['get'][$path] = $callback;
 	}
 
 	/**
 	 * @param $path
-	 * @param  callable  $callback
+	 * @param $callback
 	 */
-	public function post($path, callable $callback)
+	public function post($path, $callback)
 	{
 		$this->routes['post'][$path] = $callback;
 	}
@@ -44,9 +45,34 @@ class Router
 		$method = $this->request->getMethod();
 		$callback = $this->routes[$method][$path] ?? false;
 		if (!$callback) {
-			echo 'Not found';
-			exit;
+			$this->response->setStatusCode(404);
+			return 'Not found';
 		}
-		echo call_user_func($callback);
+		if (is_string($callback)) {
+			return $this->renderView($callback);
+		}
+
+		return call_user_func($callback);
+	}
+
+	public function renderView(string $view): array|bool|string
+	{
+		$layoutContent = $this->layoutContent();
+		$viewContent = $this->renderOnlyView($view);
+		return str_replace('{{content}}', $viewContent, $layoutContent);
+	}
+
+	protected function layoutContent(): bool|string
+	{
+		ob_start();
+		include_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'main.php';
+		return ob_get_clean();
+	}
+
+	protected function renderOnlyView($view): bool|string
+	{
+		ob_start();
+		include_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $view . '.php';
+		return ob_get_clean();
 	}
 }

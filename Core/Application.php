@@ -2,25 +2,29 @@
 
 namespace App\Core;
 
-use JetBrains\PhpStorm\Pure;
-
 /**
  * Class Application
  * @package App\Core
  */
 class Application
 {
+	public static string $ROOT_DIR;
 	public Router $router;
 	public Request $request;
+	public Response $response;
+	public static Application $app;
 
-	#[Pure] public function __construct()
+	public function __construct($rootPath)
 	{
+		static::$ROOT_DIR = $rootPath;
+		static::$app = $this;
 		$this->request = new Request();
-		$this->router = new Router($this->request);
+		$this->response = new Response();
+		$this->router = new Router($this->request, $this->response);
 	}
 
 	public function run()
 	{
-		$this->router->resolve();
+		echo $this->router->resolve();
 	}
 }
