@@ -3,7 +3,9 @@
 
 namespace App\controllers;
 
+use App\Core\Application;
 use App\Core\Controller;
+use App\Core\Request;
 
 /**
  * Class SiteController
@@ -24,16 +26,18 @@ class SiteController extends Controller
 	public function contact(): bool|array|string
 	{
 		$params = [
-			'pageTitle' => 'contact',
+			'pageTitle' => 'Contact',
 		];
 		return $this->render('contact', $params);
 	}
 
-	public static function handleContact(): string
+	public static function handleContact(Request $request): string
 	{
 		$params = [
-			'pageTitle' => 'contact',
+			'pageTitle' => 'Contact',
 		];
+		$body = $request->getBody();
+
 		return 'Handling submitted data';
 	}
 }

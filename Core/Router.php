@@ -43,7 +43,7 @@ class Router
 	public function resolve()
 	{
 		$path = $this->request->getPath();
-		$method = $this->request->getMethod();
+		$method = $this->request->method();
 		$callback = $this->routes[$method][$path] ?? false;
 
 		if (!$callback) {
@@ -57,7 +57,7 @@ class Router
 		if (is_array($callback)) {
 			$callback[0] = new $callback[0]();
 		}
-		return call_user_func($callback);
+		return call_user_func($callback, $this->request);
 	}
 
 	public function renderView(string $view, $params = []): array|bool|string
