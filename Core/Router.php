@@ -3,13 +3,19 @@
 namespace App\Core;
 
 use App\Core\Helpers\ResponseCodes;
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Class Router
  * @package App\Core
  */
 class Router
 {
+	protected Application $app;
 
+	/**
+	 * @var array
+	 */
 	protected array $routes = [];
 
 	/**
@@ -18,8 +24,9 @@ class Router
 	 * @param  Request  $request
 	 * @param  Response  $response
 	 */
-	public function __construct(public Request $request, public Response $response)
+	#[Pure] public function __construct(public Request $request, public Response $response)
 	{
+		$this->app = Application::getApp();
 	}
 
 	/**
@@ -40,7 +47,10 @@ class Router
 		$this->routes['post'][$path] = $callback;
 	}
 
-	public function resolve()
+	/**
+	 * @return mixed
+	 */
+	public function resolve(): mixed
 	{
 		$path = $this->request->getPath();
 		$method = $this->request->method();
@@ -56,24 +66,37 @@ class Router
 
 		if (is_array($callback)) {
 			$callback[0] = new $callback[0]();
+			$this->app->setController($callback[0]);
 		}
 		return call_user_func($callback, $this->request);
 	}
 
-	public function renderView(string $view, $params = []): array|bool|string
+	/**
+	 * @param  string  $view
+	 * @param  array  $params
+	 *
+	 * @return array|bool|string
+	 */
+	public function renderView(string $view, array $params = []): array|bool|string
 	{
 		$layoutContent = $this->layoutContent($params);
 		$viewContent = $this->renderOnlyView($view, $params);
 		return str_replace('{{content}}', $viewContent, $layoutContent);
 	}
 
+	/**
+	 * @param $params
+	 *
+	 * @return bool|string
+	 */
 	protected function layoutContent($params): bool|string
 	{
 		foreach ($params as $key => $value) {
 			$$key = $value;
 		}
+		$layout = $this->app->getController()->layout;
 		ob_start();
-		include_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'main.php';
+		include_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $layout . '.php';
 		return ob_get_clean();
 	}
 

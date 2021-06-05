@@ -13,13 +13,23 @@ use App\Core\Request;
 class AuthController extends Controller
 {
 
-	public function login()
+	/**
+	 * @return bool|array|string
+	 */
+	public function login(): bool|array|string
 	{
+		$this->setLayout('auth');
 		return $this->render('login');
 	}
 
-	public function register(Request $request)
+	/**
+	 * @param  Request  $request
+	 *
+	 * @return bool|array|string
+	 */
+	public function register(Request $request): bool|array|string
 	{
+		$this->setLayout('auth');
 		if ($request->isPost()) {
 			return 'Handle submitted data';
 		}

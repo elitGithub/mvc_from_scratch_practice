@@ -2,7 +2,7 @@
 <form action="" method="post">
     <div class="form-group">
         <label for="subject">Subject</label>
-            <input id="subject" type="text" name="subject" class="form-control">
+            <input id="subject" type="text" name="subject" class="form-control" required>
     </div>
     <div class="form-group">
         <label for="email">Email</label>

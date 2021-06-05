@@ -27,28 +27,29 @@ class Request
 
 	#[Pure] public function isGet(): bool
 	{
-		return $this->method() === 'get';
+		return ($this->method() === 'get');
 	}
 
 	#[Pure] public function isPost(): bool
 	{
-		return $this->method() === 'post';
+		return ($this->method() === 'post');
 	}
 
 	public function getBody(): array
 	{
 		$body = [];
 
-		if ($this->method() === 'get') {
+		if ($this->isGet()) {
 			foreach ($_GET as $key => $value) {
 				$body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
 			}
 		}
 
-		if ($this->method() === 'post') {
+		if ($this->isPost()) {
 			if (empty($_POST)) {
-				// In case of content type 'JSON', $_POST, $_REQUEST are not populated (yay PHP)
-				$_POST = file_get_contents('php://input');
+				// If a form submits content-type of application/json, $_POST and $_REQUEST are not automatically filled.
+				$_POST = array_merge($_POST, json_decode(file_get_contents('php://input'), true));
+				$_REQUEST = array_merge($_POST, $_REQUEST);
 			}
 			foreach ($_POST as $key => $value) {
 				$body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
