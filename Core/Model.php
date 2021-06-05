@@ -18,7 +18,7 @@ abstract class Model
 
 	public array $errors = [];
 
-	public function loadDate(array $data)
+	public function loadData(array $data)
 	{
 		foreach ($data as $key => $value) {
 			if (property_exists($this, $key)) {
@@ -101,5 +101,15 @@ abstract class Model
 			static::RULE_MAX      => 'Max length of this field must be {max}',
 			static::RULE_MATCH    => 'This field must be the same as {match}',
 		];
+	}
+
+	public function hasError($attribute)
+	{
+		return $this->errors[$attribute] ?? false;
+	}
+
+	public function getFirstError($attribute)
+	{
+		return $this->errors[$attribute][0] ?? '';
 	}
 }
