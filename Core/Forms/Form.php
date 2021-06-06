@@ -20,7 +20,7 @@ class Form
 		echo '</form>';
 	}
 
-	#[Pure] public function field(Model $model, $attribute): Field
+	public function field(Model $model, $attribute): Field
 	{
 		return new Field($model, $attribute);
 	}

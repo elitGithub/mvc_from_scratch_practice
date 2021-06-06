@@ -27,7 +27,7 @@ class Field
 				<div class="invalid-feedback">%s</div>
 			</div>',
 			$this->attribute,
-			$this->humanReadable($this->attribute),
+			$this->prettyLabels($this->attribute),
 			$this->attribute,
 			$this->type,
 			$this->attribute,
@@ -49,7 +49,7 @@ class Field
 	 *
 	 * @return string
 	 */
-	private function humanReadable($string): string
+	private function prettyLabels($string): string
 	{
 		$string = str_replace('_', ' ', $string);
 		return ucfirst($string);
@@ -58,7 +58,8 @@ class Field
 	/**
 	 * @return $this
 	 */
-	public function passwordField() {
+	public function passwordField(): static
+	{
 		$this->setType(static::TYPE_PASSWORD);
 		return $this;
 	}
