@@ -5,6 +5,7 @@ namespace App\Core;
 
 
 use PDO;
+use App\Migrations;
 
 /**
  * Class Database
@@ -14,6 +15,8 @@ class Database
 {
 
 	public PDO $pdo;
+
+	private $skipMigrations = ['.', '..'];
 
 	public function __construct(array $config)
 	{
@@ -27,11 +30,32 @@ class Database
 	public function applyMigrations()
 	{
 		$this->createMigrationsTable();
-		$this->getAppliedMigrations();
+		$appliedMigrations = $this->getAppliedMigrations();
 
-		$files = scandir(Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'migrations.php');
+		$files = scandir(Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'migrations');
 
-		var_dump($files);
+		$toApplyMigrations = array_diff($files, $appliedMigrations);
+		foreach ($toApplyMigrations as $migration) {
+			if (in_array($migration, $this->skipMigrations)) {
+				continue;
+			}
+
+			require_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR . $migration;
+			$className = pathinfo($migration, PATHINFO_FILENAME);
+			$this->addNameSpace($className);
+			$instance = new $className();
+
+			echo "Migrating $migration" . PHP_EOL;
+			$instance->up();
+			echo "Migrated $migration" . PHP_EOL;
+			$newMigrations[] = $migration;
+		}
+
+		if (!empty($newMigrations)) {
+			$this->saveMigrations($newMigrations);
+		} else {
+			echo "No new migrations to apply";
+		}
 	}
 
 	public function createMigrationsTable()
@@ -43,10 +67,23 @@ class Database
     			ENGINE=INNODB");
 	}
 
-	public function getAppliedMigrations()
+	public function getAppliedMigrations(): array
 	{
 		$statement = $this->pdo->prepare("SELECT migration FROM migrations;");
 		$statement->execute();
 		return $statement->fetchAll(PDO::FETCH_COLUMN);
+	}
+
+	protected function addNameSpace(array|string &$className)
+	{
+		if (is_string($className)) {
+			$className = "\\App\Migrations\\$className";
+		}
+	}
+
+	public function saveMigrations(array $migrations)
+	{
+		$this->pdo->prepare("INSERT INTO migrations (migration) VALUES 
+                                          ('')");
 	}
 }

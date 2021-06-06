@@ -6,7 +6,7 @@ class m0001_initial {
 
 	public function up()
 	{
-		echo 'Applying migration';
+		echo 'Hello from UP initials 0001'.PHP_EOL;
 	}
 
 	public function down()
