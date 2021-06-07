@@ -4,7 +4,9 @@
 namespace App\Migrations;
 
 
-class m0002_something
+use App\Core\Migration;
+
+class m0002_something extends Migration
 {
 	public function up()
 	{
