@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use App\controllers\AuthController;
+use App\controllers\SiteController;
 use App\Core\Helpers\ResponseCodes;
 use JetBrains\PhpStorm\Pure;
 
@@ -109,5 +111,24 @@ class Router
 		ob_start();
 		include_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $view . '.php';
 		return ob_get_clean();
+	}
+
+	/**
+	 * All your base are belong to us
+	 * Register the application routes here
+	 * @TODO: Maybe make this more diverse/use separate files, as in a larger application, this thing will become a monster.
+	 */
+	public function registerRoutes()
+	{
+		$this->get('/', [SiteController::class, 'home']);
+
+		$this->get('/contact', [SiteController::class, 'contact']);
+		$this->post('/contact', [SiteController::class, 'handleContact']);
+
+		$this->get('/login', [AuthController::class, 'login']);
+		$this->post('/login', [AuthController::class, 'login']);
+
+		$this->get('/register', [AuthController::class, 'register']);
+		$this->post('/register', [AuthController::class, 'register']);
 	}
 }

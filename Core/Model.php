@@ -86,6 +86,9 @@ abstract class Model
 		$this->errors[$attribute][] = $message;
 	}
 
+	/**
+	 * @return string[]
+	 */
 	#[ArrayShape([
 		self::RULE_REQUIRED => "string",
 		self::RULE_EMAIL    => "string",

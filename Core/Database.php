@@ -59,48 +59,6 @@ class Database
 		}
 	}
 
-	public function createMigrationsTable()
-	{
-		$this->pdo->exec("CREATE TABLE IF NOT EXISTS migrations (
-    			id INT AUTO_INCREMENT PRIMARY KEY,
-    			migration VARCHAR(255),
-    			batch INT,
-    			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
-    			ENGINE=INNODB");
-	}
-
-	public function getAppliedMigrations(): array
-	{
-		$statement = $this->pdo->prepare("SELECT migration FROM migrations;");
-		$statement->execute();
-		return $statement->fetchAll(PDO::FETCH_COLUMN);
-	}
-
-	protected function addNameSpace(array|string &$className)
-	{
-		if (is_string($className)) {
-			$className = "\\App\Migrations\\$className";
-		}
-	}
-
-	public function saveMigrations(array $migrations)
-	{
-		$values = join(',', array_map(fn($m) => "('$m', $this->batch)", $migrations));
-		$stmt = $this->pdo->prepare("INSERT INTO migrations (migration, batch) VALUES $values");
-		$stmt->execute();
-	}
-
-	public function deleteMigrations(array $migrations) {
-		$toDelete = join(',', array_map(fn($m) => "'$m'", $migrations));
-		$stmt = $this->pdo->prepare("DELETE FROM migrations WHERE migration IN ($toDelete)");
-		$stmt->execute();
-	}
-
-	protected function consoleOutput(string $message)
-	{
-		echo '[' . date('Y-m-d H:i:s') . '] - ' . $message . PHP_EOL;
-	}
-
 	public function reverseMigrations()
 	{
 		$result = $this->pdo->prepare('SELECT migration FROM migrations WHERE batch IN (SELECT MAX(batch) AS batch FROM migrations);');
@@ -125,6 +83,49 @@ class Database
 			$this->consoleOutput('No migrations to roll back');
 		}
 	}
+
+	public function createMigrationsTable()
+	{
+		$this->pdo->exec("CREATE TABLE IF NOT EXISTS migrations (
+    			id INT AUTO_INCREMENT PRIMARY KEY,
+    			migration VARCHAR(255),
+    			batch INT,
+    			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
+    			ENGINE=INNODB");
+	}
+
+	protected function getAppliedMigrations(): array
+	{
+		$statement = $this->pdo->prepare("SELECT migration FROM migrations;");
+		$statement->execute();
+		return $statement->fetchAll(PDO::FETCH_COLUMN);
+	}
+
+	protected function addNameSpace(array|string &$className)
+	{
+		if (is_string($className)) {
+			$className = "\\App\Migrations\\$className";
+		}
+	}
+
+	protected function saveMigrations(array $migrations)
+	{
+		$values = join(',', array_map(fn($m) => "('$m', $this->batch)", $migrations));
+		$stmt = $this->pdo->prepare("INSERT INTO migrations (migration, batch) VALUES $values");
+		$stmt->execute();
+	}
+
+	protected function deleteMigrations(array $migrations) {
+		$toDelete = join(',', array_map(fn($m) => "'$m'", $migrations));
+		$stmt = $this->pdo->prepare("DELETE FROM migrations WHERE migration IN ($toDelete)");
+		$stmt->execute();
+	}
+
+	protected function consoleOutput(string $message)
+	{
+		echo '[' . date('Y-m-d H:i:s') . '] - ' . $message . PHP_EOL;
+	}
+
 
 	private function currentBatch()
 	{

@@ -3,14 +3,13 @@
 
 namespace App\models;
 
-use App\Core\Model;
-use JetBrains\PhpStorm\ArrayShape;
+use App\Core\DbModel;
 
 /**
  * Class RegisterModel
  * @package App\models
  */
-class RegisterModel extends Model
+class User extends DbModel
 {
 	public string $first_name = '';
 	public string $last_name = '';
@@ -24,13 +23,7 @@ class RegisterModel extends Model
 		return true;
 	}
 
-	#[ArrayShape([
-		'first_name'       => "array",
-		'last_name'        => "array",
-		'email'            => "array",
-		'password'         => "array",
-		'confirm_password' => "array",
-	])] public function rules(): array
+	public function rules(): array
 	{
 		return [
 			'first_name'       => [static::RULE_REQUIRED],
@@ -43,5 +36,10 @@ class RegisterModel extends Model
 			],
 			'confirm_password' => [static::RULE_REQUIRED, [static::RULE_MATCH, static::RULE_MATCH => 'password']],
 		];
+	}
+
+	public function tableName(): string
+	{
+		return 'users';
 	}
 }
