@@ -4,8 +4,6 @@
 namespace App\Core;
 
 
-use JetBrains\PhpStorm\ArrayShape;
-
 abstract class Model
 {
 
@@ -64,6 +62,19 @@ abstract class Model
 				if ($ruleName === static::RULE_MATCH && $value !== $this->{$rule['match']}) {
 					$this->addError($attribute, static::RULE_MATCH, $rule);
 				}
+
+				if ($ruleName === static::RULE_UNIQUE) {
+					$className = $rule['class'];
+					$uniqueAttr = $rule['attribute'] ?? $attribute;
+					$tableName = $className::tableName();
+					$stmt = Application::$app->db->prepare("SELECT * FROM $tableName WHERE $uniqueAttr = :attr");
+					$stmt->bindValue(":attr", $value);
+					$stmt->execute();
+					$record = $stmt->fetchObject();
+					if ($record) {
+						$this->addError($attribute, static::RULE_UNIQUE, ['field' => $attribute]);
+					}
+				}
 			}
 		}
 
@@ -89,13 +100,7 @@ abstract class Model
 	/**
 	 * @return string[]
 	 */
-	#[ArrayShape([
-		self::RULE_REQUIRED => "string",
-		self::RULE_EMAIL    => "string",
-		self::RULE_MIN      => "string",
-		self::RULE_MAX      => "string",
-		self::RULE_MATCH    => "string",
-	])] public function errorMessages(): array
+	public function errorMessages(): array
 	{
 		return [
 			static::RULE_REQUIRED => 'This field is required',
@@ -103,15 +108,26 @@ abstract class Model
 			static::RULE_MIN      => 'Min length of this field must be {min}',
 			static::RULE_MAX      => 'Max length of this field must be {max}',
 			static::RULE_MATCH    => 'This field must be the same as {match}',
+			static::RULE_UNIQUE   => 'Record with this {field} already exists',
 		];
 	}
 
-	public function hasError($attribute)
+	/**
+	 * @param $attribute
+	 *
+	 * @return mixed
+	 */
+	public function hasError($attribute): mixed
 	{
 		return $this->errors[$attribute] ?? false;
 	}
 
-	public function getFirstError($attribute)
+	/**
+	 * @param $attribute
+	 *
+	 * @return mixed
+	 */
+	public function getFirstError($attribute): mixed
 	{
 		return $this->errors[$attribute][0] ?? '';
 	}

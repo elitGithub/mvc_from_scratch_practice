@@ -126,6 +126,10 @@ class Database
 		echo '[' . date('Y-m-d H:i:s') . '] - ' . $message . PHP_EOL;
 	}
 
+	public function prepare(string $query) {
+		return $this->pdo->prepare($query);
+	}
+
 
 	private function currentBatch()
 	{

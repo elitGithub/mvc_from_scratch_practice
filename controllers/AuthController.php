@@ -31,18 +31,18 @@ class AuthController extends Controller
 	public function register(Request $request): bool|array|string
 	{
 		$this->setLayout('auth');
-		$registerModel = new User();
+		$user = new User();
 		if ($request->isPost()) {
-			$registerModel->loadData($request->getBody());
-			if ($registerModel->validate() && $registerModel->register()) {
+			$user->loadData($request->getBody());
+			if ($user->validate() && $user->save()) {
 				echo 'Success';
 			}
 			return $this->render('register', [
-				'model' => $registerModel,
+				'model' => $user,
 			]);
 		}
 		return $this->render('register', [
-			'model' => $registerModel,
+			'model' => $user,
 		]);
 	}
 
