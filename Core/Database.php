@@ -5,6 +5,7 @@ namespace App\Core;
 
 
 use PDO;
+use PDOStatement;
 
 /**
  * Class Database
@@ -126,7 +127,8 @@ class Database
 		echo '[' . date('Y-m-d H:i:s') . '] - ' . $message . PHP_EOL;
 	}
 
-	public function prepare(string $query) {
+	public function prepare(string $query): bool|PDOStatement
+	{
 		return $this->pdo->prepare($query);
 	}
 

@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use Dotenv\Dotenv;
+
 /**
  * Class Application
  * @package App\Core
@@ -16,16 +18,38 @@ class Application
 	public Request $request;
 	public Response $response;
 
-	public function __construct(string $rootPath, array $config)
+	public function __construct(string $rootPath)
 	{
 		static::$ROOT_DIR = $rootPath;
 		$this->setApp($this);
 		$this->request = new Request();
 		$this->response = new Response();
 		$this->router = new Router($this->request, $this->response);
+	}
+
+	/**
+	 * Make the app - should load the config (maybe load some other stuff?)
+	 * For now - load the DB.
+	 */
+	public function make()
+	{
+		$dotenv = Dotenv::createImmutable(static::$ROOT_DIR);
+		$dotenv->load();
+
+		$config = [
+			'db' => [
+				'dsn'      => $_ENV['DB_DSN'],
+				'user'     => $_ENV['DB_USER'],
+				'password' => $_ENV['DB_PASSWORD'],
+			],
+		];
+
 		$this->db = new Database($config['db']);
 	}
 
+	/**
+	 * Run the application - resolve the routing.
+	 */
 	public function run()
 	{
 		echo $this->router->resolve();

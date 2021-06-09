@@ -2,8 +2,8 @@
 
 namespace App\Core;
 
-use App\controllers\AuthController;
-use App\controllers\SiteController;
+use App\Controllers\AuthController;
+use App\Controllers\SiteController;
 use App\Core\Helpers\ResponseCodes;
 use JetBrains\PhpStorm\Pure;
 
@@ -102,6 +102,12 @@ class Router
 		return ob_get_clean();
 	}
 
+	/**
+	 * @param $view
+	 * @param $params
+	 *
+	 * @return bool|string
+	 */
 	protected function renderOnlyView($view, $params): bool|string
 	{
 		foreach ($params as $key => $value) {

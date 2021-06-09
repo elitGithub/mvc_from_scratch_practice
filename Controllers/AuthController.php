@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\controllers;
+namespace App\Controllers;
 
 use App\Core\Application;
 use App\Core\Controller;
 use App\Core\Request;
-use App\models\User;
+use App\Models\User;
 
 /**
  * Class AuthController
