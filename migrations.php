@@ -16,8 +16,8 @@ $config = [
 	],
 ];
 
-$app = new Application(__DIR__, $config);
-
+$app = new Application(__DIR__);
+$app->bootstrap();
 if (isset($argv[1]) && $argv[1] === 'rollback') {
 	// TODO: implement number of steps to go back. Right now will got back one batch
 	$app->db->reverseMigrations();

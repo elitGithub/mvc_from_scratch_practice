@@ -7,6 +7,6 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendo
 $app = new Application(dirname(__DIR__));
 $app->router->registerRoutes();
 
-$app->make();
+$app->bootstrap();
 
 $app->run();

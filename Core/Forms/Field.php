@@ -27,7 +27,7 @@ class Field
 				<div class="invalid-feedback">%s</div>
 			</div>',
 			$this->attribute,
-			$this->prettyLabels($this->attribute),
+			$this->model->getLabel($this->attribute),
 			$this->attribute,
 			$this->type,
 			$this->attribute,
@@ -42,17 +42,6 @@ class Field
 	public function setType(string $type): void
 	{
 		$this->type = $type;
-	}
-
-	/**
-	 * @param $string
-	 *
-	 * @return string
-	 */
-	private function prettyLabels($string): string
-	{
-		$string = str_replace('_', ' ', $string);
-		return ucfirst($string);
 	}
 
 	/**

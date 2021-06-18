@@ -33,7 +33,11 @@ class User extends DbModel
 		return [
 			'first_name'       => [static::RULE_REQUIRED],
 			'last_name'        => [static::RULE_REQUIRED],
-			'email'            => [static::RULE_REQUIRED, static::RULE_EMAIL, [static::RULE_UNIQUE, 'class' => static::class]],
+			'email'            => [
+				static::RULE_REQUIRED,
+				static::RULE_EMAIL,
+				[static::RULE_UNIQUE, 'class' => static::class],
+			],
 			'password'         => [
 				static::RULE_REQUIRED,
 				[static::RULE_MIN, static::RULE_MIN => 8],
@@ -53,5 +57,16 @@ class User extends DbModel
 		// TODO: read the table schema and get the column names from there, then get the columns as attributes
 		// This should create a model of the table - just like an ORM
 		return ['first_name', 'last_name', 'email', 'password', 'status'];
+	}
+
+	public function labels(): array
+	{
+		return [
+			'first_name'       => 'First Name',
+			'last_name'        => 'Last Name',
+			'email'            => 'Email',
+			'password'         => 'Password',
+			'confirm_password' => 'Confirm Password',
+		];
 	}
 }

@@ -30,6 +30,16 @@ abstract class Model
 	 */
 	abstract public function rules(): array;
 
+	public function labels(): array
+	{
+		return [];
+	}
+
+	public function getLabel($attribute)
+	{
+		return $this->labels()[$attribute] ?? $attribute;
+	}
+
 	/**
 	 * @return bool
 	 */
@@ -60,6 +70,7 @@ abstract class Model
 				}
 
 				if ($ruleName === static::RULE_MATCH && $value !== $this->{$rule['match']}) {
+					$rule['match'] = $this->getLabel($rule['match']);
 					$this->addError($attribute, static::RULE_MATCH, $rule);
 				}
 
@@ -72,7 +83,7 @@ abstract class Model
 					$stmt->execute();
 					$record = $stmt->fetchObject();
 					if ($record) {
-						$this->addError($attribute, static::RULE_UNIQUE, ['field' => $attribute]);
+						$this->addError($attribute, static::RULE_UNIQUE, ['field' => $this->getLabel($attribute)]);
 					}
 				}
 			}
@@ -103,12 +114,12 @@ abstract class Model
 	public function errorMessages(): array
 	{
 		return [
-			static::RULE_REQUIRED => 'This field is required',
-			static::RULE_EMAIL    => 'This field must be a valid email address',
-			static::RULE_MIN      => 'Min length of this field must be {min}',
-			static::RULE_MAX      => 'Max length of this field must be {max}',
-			static::RULE_MATCH    => 'This field must be the same as {match}',
-			static::RULE_UNIQUE   => 'Record with this {field} already exists',
+			static::RULE_REQUIRED => 'This field is required.',
+			static::RULE_EMAIL    => 'This field must be a valid email address.',
+			static::RULE_MIN      => 'This field must be at least {min} characters long.',
+			static::RULE_MAX      => 'This field must be at most {max} characters long.',
+			static::RULE_MATCH    => 'This field must be the same as {match}.',
+			static::RULE_UNIQUE   => 'Record with this {field} already exists.',
 		];
 	}
 

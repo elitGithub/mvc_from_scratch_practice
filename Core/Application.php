@@ -17,6 +17,7 @@ class Application
 	public Router $router;
 	public Request $request;
 	public Response $response;
+	public Session $session;
 
 	public function __construct(string $rootPath)
 	{
@@ -25,13 +26,14 @@ class Application
 		$this->request = new Request();
 		$this->response = new Response();
 		$this->router = new Router($this->request, $this->response);
+		$this->session = new Session();
 	}
 
 	/**
 	 * Make the app - should load the config (maybe load some other stuff?)
 	 * For now - load the DB.
 	 */
-	public function make()
+	public function bootstrap()
 	{
 		$dotenv = Dotenv::createImmutable(static::$ROOT_DIR);
 		$dotenv->load();
