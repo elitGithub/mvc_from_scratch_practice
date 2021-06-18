@@ -9,15 +9,16 @@ $dotenv->load();
 
 
 $config = [
-	'db' => [
+	'db'        => [
 		'dsn'      => $_ENV['DB_DSN'],
 		'user'     => $_ENV['DB_USER'],
 		'password' => $_ENV['DB_PASSWORD'],
 	],
+	'userClass' => \App\Models\User::class,
 ];
 
-$app = new Application(__DIR__);
-$app->bootstrap();
+
+$app = new Application(__DIR__, $config);
 if (isset($argv[1]) && $argv[1] === 'rollback') {
 	// TODO: implement number of steps to go back. Right now will got back one batch
 	$app->db->reverseMigrations();

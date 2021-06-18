@@ -70,7 +70,7 @@ class Router
 			$callback[0] = new $callback[0]();
 			$this->app->setController($callback[0]);
 		}
-		return call_user_func($callback, $this->request);
+		return call_user_func($callback, $this->request, $this->response);
 	}
 
 	/**
@@ -122,7 +122,8 @@ class Router
 	/**
 	 * All your base are belong to us
 	 * Register the application routes here
-	 * @TODO: Maybe make this more diverse/use separate files, as in a larger application, this thing will become a monster.
+	 * @TODO: Maybe make this more diverse/use separate files, as in a larger application, this thing will become a
+	 *     monster.
 	 */
 	public function registerRoutes()
 	{
@@ -136,5 +137,7 @@ class Router
 
 		$this->get('/register', [AuthController::class, 'register']);
 		$this->post('/register', [AuthController::class, 'register']);
+
+		$this->get('/logout', [AuthController::class, 'logout']);
 	}
 }

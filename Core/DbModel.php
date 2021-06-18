@@ -9,14 +9,16 @@ use PDOStatement;
 
 abstract class DbModel extends Model
 {
-	abstract public function tableName(): string;
+	abstract public static function tableName(): string;
 
 	abstract public function attributes(): array;
+
+	abstract public static function primaryKey(): string;
 
 	public function save(): bool
 	{
 		try {
-			$tableName = $this->tableName();
+			$tableName = static::tableName();
 			$attributes = $this->attributes();
 			$params = array_map(fn($attr) => ":$attr", $attributes);
 			$statement = static::prepare("INSERT INTO $tableName (" . implode(',',
@@ -38,5 +40,19 @@ abstract class DbModel extends Model
 	public static function prepare($sql): bool|PDOStatement
 	{
 		return Application::$app->db->pdo->prepare($sql);
+	}
+
+	public static function findOne(array $where = [])
+	{
+		$tableName = static::tableName();
+		$attributes = array_keys($where);
+		$sqlWhere = implode("AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
+		$stmt = static::prepare("SELECT * FROM $tableName WHERE $sqlWhere");
+		foreach ($where as $key => $value) {
+			$stmt->bindValue(":$key", $value);
+		}
+
+		$stmt->execute();
+		return $stmt->fetchObject(static::class);
 	}
 }

@@ -54,24 +54,24 @@ abstract class Model
 				}
 
 				if ($ruleName === static::RULE_REQUIRED && !$value) {
-					$this->addError($attribute, static::RULE_REQUIRED, $rule);
+					$this->addErrorForRule($attribute, static::RULE_REQUIRED, $rule);
 				}
 
 				if ($ruleName === static::RULE_EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-					$this->addError($attribute, static::RULE_EMAIL, $rule);
+					$this->addErrorForRule($attribute, static::RULE_EMAIL, $rule);
 				}
 
 				if ($ruleName === static::RULE_MIN && (strlen($value) < $rule[static::RULE_MIN])) {
-					$this->addError($attribute, static::RULE_MIN, $rule);
+					$this->addErrorForRule($attribute, static::RULE_MIN, $rule);
 				}
 
 				if ($ruleName === static::RULE_MAX && (strlen($value) > $rule[static::RULE_MAX])) {
-					$this->addError($attribute, static::RULE_MAX, $rule);
+					$this->addErrorForRule($attribute, static::RULE_MAX, $rule);
 				}
 
 				if ($ruleName === static::RULE_MATCH && $value !== $this->{$rule['match']}) {
 					$rule['match'] = $this->getLabel($rule['match']);
-					$this->addError($attribute, static::RULE_MATCH, $rule);
+					$this->addErrorForRule($attribute, static::RULE_MATCH, $rule);
 				}
 
 				if ($ruleName === static::RULE_UNIQUE) {
@@ -83,7 +83,8 @@ abstract class Model
 					$stmt->execute();
 					$record = $stmt->fetchObject();
 					if ($record) {
-						$this->addError($attribute, static::RULE_UNIQUE, ['field' => $this->getLabel($attribute)]);
+						$this->addErrorForRule($attribute, static::RULE_UNIQUE,
+							['field' => $this->getLabel($attribute)]);
 					}
 				}
 			}
@@ -97,7 +98,7 @@ abstract class Model
 	 * @param  string  $rule
 	 * @param  array|string  $params
 	 */
-	public function addError(string $attribute, string $rule, array|string $params = [])
+	public function addErrorForRule(string $attribute, string $rule, array|string $params = [])
 	{
 		$message = $this->errorMessages()[$rule] ?? '';
 		if (is_array($params)) {
@@ -105,6 +106,12 @@ abstract class Model
 				$message = str_replace('{' . $key . '}', $value, $message);
 			}
 		}
+		$this->errors[$attribute][] = $message;
+	}
+
+
+	public function addError(string $attribute, string $message)
+	{
 		$this->errors[$attribute][] = $message;
 	}
 

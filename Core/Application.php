@@ -12,14 +12,17 @@ class Application
 {
 	public static string $ROOT_DIR;
 	public static Application $app;
+
+	public string $userClass;
 	public Controller $controller;
 	public Database $db;
 	public Router $router;
 	public Request $request;
 	public Response $response;
 	public Session $session;
+	public ?DbModel $user;
 
-	public function __construct(string $rootPath)
+	public function __construct(string $rootPath, array $config)
 	{
 		static::$ROOT_DIR = $rootPath;
 		$this->setApp($this);
@@ -27,26 +30,21 @@ class Application
 		$this->response = new Response();
 		$this->router = new Router($this->request, $this->response);
 		$this->session = new Session();
+		$this->db = new Database($config['db']);
+		$this->userClass = $config['userClass'];
+
+		$primaryValue = $this->session->get('user');
+		if ($primaryValue) {
+			$primaryKey = $this->userClass::primaryKey();
+			$this->user = $this->userClass::findOne([$primaryKey => $primaryValue]);
+		} else {
+			$this->user = null;
+		}
 	}
 
-	/**
-	 * Make the app - should load the config (maybe load some other stuff?)
-	 * For now - load the DB.
-	 */
-	public function bootstrap()
+	public static function isGuest()
 	{
-		$dotenv = Dotenv::createImmutable(static::$ROOT_DIR);
-		$dotenv->load();
-
-		$config = [
-			'db' => [
-				'dsn'      => $_ENV['DB_DSN'],
-				'user'     => $_ENV['DB_USER'],
-				'password' => $_ENV['DB_PASSWORD'],
-			],
-		];
-
-		$this->db = new Database($config['db']);
+		return !static::$app->user;
 	}
 
 	/**
@@ -87,5 +85,20 @@ class Application
 	public static function setApp(Application $app): void
 	{
 		static::$app = $app;
+	}
+
+	public function login(DbModel $user)
+	{
+		$this->user = $user;
+		$primaryKey = $user->primaryKey();
+		$primaryValue = $user->{$primaryKey};
+		$this->session->set('user', $primaryValue);
+		return true;
+	}
+
+	public function logout()
+	{
+		$this->user = null;
+		$this->session->remove('user');
 	}
 }
