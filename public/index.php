@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use eligithub\phpmvc\Application;
 use Dotenv\Dotenv;
 
@@ -14,11 +15,14 @@ $config = [
 		'user'     => $_ENV['DB_USER'],
 		'password' => $_ENV['DB_PASSWORD'],
 	],
-	'userClass' => \App\Models\User::class,
+	'userClass' => User::class,
 ];
 
 
 $app = new Application(dirname(__DIR__), $config);
+$app->on(Application::EVENT_BEFORE_REQUEST, function () {
+	echo "before request";
+});
 $app->router->registerRoutes();
 
 
