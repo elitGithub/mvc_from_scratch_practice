@@ -4,11 +4,12 @@
 namespace App\Core\Exceptions;
 
 
+use App\Core\Helpers\ResponseCodes;
 use Exception;
 
 class NotFoundException extends Exception
 {
-	protected $code = 404;
+	protected $code = ResponseCodes::HTTP_NOT_FOUND;
 	protected $message = 'Page not found';
 
 }

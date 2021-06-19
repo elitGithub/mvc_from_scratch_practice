@@ -1,9 +1,11 @@
 <?php
 
 
-namespace App\Core;
+namespace App\Core\DB;
 
 
+use App\Core\Application;
+use App\Core\Model;
 use PDOException;
 use PDOStatement;
 

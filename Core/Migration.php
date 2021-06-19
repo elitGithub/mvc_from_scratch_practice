@@ -4,6 +4,8 @@
 namespace App\Core;
 
 
+use App\Core\DB\Database;
+
 abstract class Migration
 {
 	public Database $db;

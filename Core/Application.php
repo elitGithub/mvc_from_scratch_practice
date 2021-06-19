@@ -1,9 +1,7 @@
 <?php
 
 namespace App\Core;
-
-use App\Core\Helpers\ResponseCodes;
-use Dotenv\Dotenv;
+use App\Core\DB\Database;
 use Exception;
 
 /**
@@ -23,7 +21,7 @@ class Application
 	public Request $request;
 	public Response $response;
 	public Session $session;
-	public ?DbModel $user;
+	public ?UserModel $user;
 	public View $view;
 
 	public function __construct(string $rootPath, array $config)
@@ -97,7 +95,7 @@ class Application
 		static::$app = $app;
 	}
 
-	public function login(DbModel $user): bool
+	public function login(UserModel $user): bool
 	{
 		$this->user = $user;
 		$primaryKey = $user->primaryKey();

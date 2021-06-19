@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Core;
+namespace App\Core\DB;
 
 
 use PDO;
@@ -9,7 +9,7 @@ use PDOStatement;
 
 /**
  * Class Database
- * @package App\Core
+ * @package App\Core\DB
  */
 class Database
 {
