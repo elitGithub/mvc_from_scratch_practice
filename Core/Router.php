@@ -88,7 +88,7 @@ class Router
 		$this->get('/', [SiteController::class, 'home']);
 
 		$this->get('/contact', [SiteController::class, 'contact']);
-		$this->post('/contact', [SiteController::class, 'handleContact']);
+		$this->post('/contact', [SiteController::class, 'contact']);
 
 		$this->get('/login', [AuthController::class, 'login']);
 		$this->post('/login', [AuthController::class, 'login']);

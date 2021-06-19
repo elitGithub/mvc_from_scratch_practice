@@ -16,8 +16,8 @@ class View
 	 */
 	public function renderView(string $view, array $params = []): array|bool|string
 	{
-		$layoutContent = $this->layoutContent($params);
 		$viewContent = $this->renderOnlyView($view, $params);
+		$layoutContent = $this->layoutContent();
 		return str_replace('{{content}}', $viewContent, $layoutContent);
 	}
 
@@ -26,12 +26,10 @@ class View
 	 *
 	 * @return bool|string
 	 */
-	public function layoutContent($params): bool|string
+	public function layoutContent(): bool|string
 	{
 		$layout = Application::$app->layout;
-		foreach ($params as $key => $value) {
-			$$key = $value;
-		}
+
 		if (Application::$app->getController()) {
 			$layout = Application::$app->getController()->layout;
 		}
