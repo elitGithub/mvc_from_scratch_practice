@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Models\User;
 use eligithub\phpmvc\Application;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -14,7 +15,7 @@ $config = [
 		'user'     => $_ENV['DB_USER'],
 		'password' => $_ENV['DB_PASSWORD'],
 	],
-	'userClass' => \App\Models\User::class,
+	'userClass' => User::class,
 ];
 
 
