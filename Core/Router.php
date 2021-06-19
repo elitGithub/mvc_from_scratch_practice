@@ -4,7 +4,7 @@ namespace App\Core;
 
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
-use App\Core\Helpers\ResponseCodes;
+use App\Core\Exceptions\NotFoundException;
 use JetBrains\PhpStorm\Pure;
 
 /**
@@ -51,6 +51,7 @@ class Router
 
 	/**
 	 * @return mixed
+	 * @throws NotFoundException
 	 */
 	public function resolve(): mixed
 	{
@@ -59,64 +60,21 @@ class Router
 		$callback = $this->routes[$method][$path] ?? false;
 
 		if (!$callback) {
-			$this->response->setStatusCode(ResponseCodes::HTTP_NOT_FOUND);
-			return $this->renderView(ResponseCodes::HTTP_NOT_FOUND);
+			throw new NotFoundException();
 		}
 		if (is_string($callback)) {
-			return $this->renderView($callback);
+			return $this->app->view->renderView($callback);
 		}
 
 		if (is_array($callback)) {
 			$callback[0] = new $callback[0]();
 			$this->app->setController($callback[0]);
+			$this->app->controller->action = $callback[1];
+			foreach ($this->app->controller->getMiddlewares() as $middleware) {
+				$middleware->execute();
+			}
 		}
 		return call_user_func($callback, $this->request, $this->response);
-	}
-
-	/**
-	 * @param  string  $view
-	 * @param  array  $params
-	 *
-	 * @return array|bool|string
-	 */
-	public function renderView(string $view, array $params = []): array|bool|string
-	{
-		$layoutContent = $this->layoutContent($params);
-		$viewContent = $this->renderOnlyView($view, $params);
-		return str_replace('{{content}}', $viewContent, $layoutContent);
-	}
-
-	/**
-	 * @param $params
-	 *
-	 * @return bool|string
-	 */
-	protected function layoutContent($params): bool|string
-	{
-		foreach ($params as $key => $value) {
-			$$key = $value;
-		}
-		$layout = $this->app->getController()->layout;
-		ob_start();
-		include_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $layout . '.php';
-		return ob_get_clean();
-	}
-
-	/**
-	 * @param $view
-	 * @param $params
-	 *
-	 * @return bool|string
-	 */
-	protected function renderOnlyView($view, $params): bool|string
-	{
-		foreach ($params as $key => $value) {
-			$$key = $value;
-		}
-
-		ob_start();
-		include_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $view . '.php';
-		return ob_get_clean();
 	}
 
 	/**
@@ -139,5 +97,7 @@ class Router
 		$this->post('/register', [AuthController::class, 'register']);
 
 		$this->get('/logout', [AuthController::class, 'logout']);
+
+		$this->get('/profile', [AuthController::class, 'profile']);
 	}
 }

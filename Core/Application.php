@@ -2,7 +2,9 @@
 
 namespace App\Core;
 
+use App\Core\Helpers\ResponseCodes;
 use Dotenv\Dotenv;
+use Exception;
 
 /**
  * Class Application
@@ -13,14 +15,16 @@ class Application
 	public static string $ROOT_DIR;
 	public static Application $app;
 
+	public string $layout = 'main';
 	public string $userClass;
-	public Controller $controller;
+	public ?Controller $controller = null;
 	public Database $db;
 	public Router $router;
 	public Request $request;
 	public Response $response;
 	public Session $session;
 	public ?DbModel $user;
+	public View $view;
 
 	public function __construct(string $rootPath, array $config)
 	{
@@ -32,6 +36,7 @@ class Application
 		$this->session = new Session();
 		$this->db = new Database($config['db']);
 		$this->userClass = $config['userClass'];
+		$this->view = new View();
 
 		$primaryValue = $this->session->get('user');
 		if ($primaryValue) {
@@ -42,7 +47,7 @@ class Application
 		}
 	}
 
-	public static function isGuest()
+	public static function isGuest(): bool
 	{
 		return !static::$app->user;
 	}
@@ -52,13 +57,18 @@ class Application
 	 */
 	public function run()
 	{
-		echo $this->router->resolve();
+		try {
+			echo $this->router->resolve();
+		} catch (Exception $e) {
+			$this->response->setStatusCode($e->getCode());
+			echo $this->view->renderView('_error', ['exception' => $e]);
+		}
 	}
 
 	/**
-	 * @return Controller
+	 * @return Controller|null
 	 */
-	public function getController(): Controller
+	public function getController(): ?Controller
 	{
 		return $this->controller;
 	}
@@ -87,7 +97,7 @@ class Application
 		static::$app = $app;
 	}
 
-	public function login(DbModel $user)
+	public function login(DbModel $user): bool
 	{
 		$this->user = $user;
 		$primaryKey = $user->primaryKey();
