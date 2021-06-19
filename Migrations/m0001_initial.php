@@ -2,8 +2,8 @@
 
 namespace App\Migrations;
 
-use App\Core\Application;
-use App\Core\Migration;
+use eligithub\phpmvc\Application;
+use eligithub\phpmvc\Migration;
 
 class m0001_initial extends Migration {
 

@@ -4,7 +4,7 @@
  * @var $this View
  */
 
-use App\Core\View;
+use eligithub\phpmvc\View;
 $this->title = 'Profile';
 
 ?>

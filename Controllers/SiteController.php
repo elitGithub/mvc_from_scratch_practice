@@ -3,10 +3,10 @@
 
 namespace App\Controllers;
 
-use App\Core\Application;
-use App\Core\Controller;
-use App\Core\Request;
-use App\Core\Response;
+use eligithub\phpmvc\Application;
+use eligithub\phpmvc\Controller;
+use eligithub\phpmvc\Request;
+use eligithub\phpmvc\Response;
 use App\Models\ContactForm;
 
 /**

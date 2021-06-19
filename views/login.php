@@ -1,7 +1,7 @@
 <h1>Login </h1>
 <?php
 
-use App\Core\Forms\Form;
+use eligithub\phpmvc\Forms\Form;
 use App\Models\LoginForm;
 
 

@@ -4,7 +4,7 @@
 namespace App\Migrations;
 
 
-use App\Core\Migration;
+use eligithub\phpmvc\Migration;
 
 class m0002_something extends Migration
 {

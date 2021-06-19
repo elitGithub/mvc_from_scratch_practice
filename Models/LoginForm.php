@@ -4,8 +4,8 @@
 namespace App\Models;
 
 
-use App\Core\Application;
-use App\Core\Model;
+use eligithub\phpmvc\Application;
+use eligithub\phpmvc\Model;
 
 class LoginForm extends Model
 {

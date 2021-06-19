@@ -3,7 +3,7 @@
 
 namespace App\Models;
 
-use App\Core\UserModel;
+use eligithub\phpmvc\UserModel;
 
 /**
  * Class RegisterModel

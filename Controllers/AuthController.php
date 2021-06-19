@@ -3,11 +3,11 @@
 
 namespace App\Controllers;
 
-use App\Core\Application;
-use App\Core\Controller;
-use App\Core\Middlewares\AuthMiddleware;
-use App\Core\Request;
-use App\Core\Response;
+use eligithub\phpmvc\Application;
+use eligithub\phpmvc\Controller;
+use eligithub\phpmvc\Middlewares\AuthMiddleware;
+use eligithub\phpmvc\Request;
+use eligithub\phpmvc\Response;
 use App\Models\LoginForm;
 use App\Models\User;
 

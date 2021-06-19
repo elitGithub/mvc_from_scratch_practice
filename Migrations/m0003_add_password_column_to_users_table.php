@@ -4,7 +4,7 @@
 namespace App\Migrations;
 
 
-use App\Core\Migration;
+use eligithub\phpmvc\Migration;
 
 class m0003_add_password_column_to_users_table extends Migration
 {

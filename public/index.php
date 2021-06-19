@@ -1,6 +1,6 @@
 <?php
 
-use App\Core\Application;
+use eligithub\phpmvc\Application;
 use Dotenv\Dotenv;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';

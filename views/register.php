@@ -1,7 +1,7 @@
 <h1>Create an account</h1>
 <?php
 
-use App\Core\Forms\Form;
+use eligithub\phpmvc\Forms\Form;
 use App\Models\User;
 
 /**

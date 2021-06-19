@@ -1,7 +1,7 @@
 <?php
 
 
-use App\Core\Application;
+use eligithub\phpmvc\Application;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);

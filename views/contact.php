@@ -7,9 +7,9 @@
  * @var $model ContactForm
  */
 
-use App\Core\Forms\Form;
-use App\Core\Forms\TextAreaField;
-use App\Core\View;
+use eligithub\phpmvc\Forms\Form;
+use eligithub\phpmvc\Forms\TextAreaField;
+use eligithub\phpmvc\View;
 use App\Models\ContactForm;
 
 $this->title = 'Contact';

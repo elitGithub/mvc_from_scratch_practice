@@ -1,6 +1,6 @@
 <?php
 
-use App\Core\Application; ?>
+use eligithub\phpmvc\Application; ?>
 <!doctype html>
 <html lang="en">
 <head>
